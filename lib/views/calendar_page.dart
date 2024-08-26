@@ -206,37 +206,48 @@ class CalendarPage extends StatelessWidget {
     );
   }
 
-  // Week View Widget
   Widget _buildWeekView(CalendarController controller) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        // border: Border.all(color: Colors.grey.withOpacity(0.5)),
-      ),
-      child: WeekView(
-        controller: controller
-            .eventController.value, // Use the observable eventController
-        showLiveTimeLineInAllDays: true,
-        minDay: DateTime(2024, 1, 1),
-        maxDay: DateTime(2024, 12, 31),
-        initialDay: DateTime(2024, 8, 22),
-        timeLineBuilder: (hour) => Container(),
-        eventTileBuilder: (date, events, boundary, start, end) {
-          return Container(
-            decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(4),
+  return Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: WeekView(
+      controller: controller.eventController.value,
+      showLiveTimeLineInAllDays: true,
+      minDay: DateTime(2024, 1, 1),
+      maxDay: DateTime(2024, 12, 31),
+      initialDay: DateTime(2024, 8, 22),
+      timeLineBuilder: (total) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Text(
+            '${total.hour.toString().padLeft(2, '0')}:00',
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 12,
             ),
-            child: Text(
-              events.first.title,
-              style: const TextStyle(color: Colors.black),
-            ),
-          );
-        },
-        weekPageHeaderBuilder: (startDate, endDate) => Container(),
-      ),
-    );
-  }
+          ),
+        );
+      },
+      eventTileBuilder: (date, events, boundary, start, end) {
+        // Debugging
+        print("Events on $date: ${events.length}");
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.blue.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            events.isNotEmpty ? events.first.title : '',
+            style: const TextStyle(color: Colors.black),
+          ),
+        );
+      },
+      weekPageHeaderBuilder: (startDate, endDate) => Container(),
+    ),
+  );
+}
+
 
   // Day View Widget
   Widget _buildDayView(CalendarController controller) {
@@ -253,8 +264,18 @@ class CalendarPage extends StatelessWidget {
           maxDay: DateTime(2024, 12, 31),
           initialDay: controller.selectedDate.value ??
               DateTime.now(), // Use reactive selectedDate
-          timeLineBuilder: (hour) => Container(),
-          eventTileBuilder: (date, events, boundary, start, end) {
+  timeLineBuilder: (total) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(
+              '${total.hour.toString().padLeft(2, '0')}:00',
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 12,
+              ),
+            ),
+          );
+        },          eventTileBuilder: (date, events, boundary, start, end) {
             return Container(
               decoration: BoxDecoration(
                 color: Colors.blue.withOpacity(0.3),

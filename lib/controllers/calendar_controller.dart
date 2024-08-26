@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:calendar_view/calendar_view.dart'; // Make sure this import is correct
+import 'package:intl/intl.dart';
 
 class CalendarController extends GetxController {
   // Observable EventController instance
@@ -11,6 +12,11 @@ class CalendarController extends GetxController {
 
   // Observable current month
   var currentMonth = DateTime.now().obs;
+
+  
+  // Observable current week start and end dates
+  var weekStartDate = DateTime.now().obs;
+  var weekEndDate = DateTime.now().obs;
 
   // List of all events as an observable
   final RxList<CalendarEventData> allEvents = <CalendarEventData>[].obs;
@@ -38,45 +44,84 @@ class CalendarController extends GetxController {
       CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.blue,
-        event: const {"event_type": "Scheduled", "eventId": "APP001"},
+        event: "APP001",
         title: "Mahindra Logistics",
-        description: "Logistics event",
+        description: "Scheduled",
         startTime: DateTime(2024, 8, 22, 10, 0),
         endTime: DateTime(2024, 8, 22, 12, 0),
       ),
       CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.red,
-        event: const {"event_type": "Scheduled", "eventId": "APP001"},
+        event: "APP001",
         title: "Mahindra Logistics",
-        description: "Logistics event",
+        description: "Scheduled",
         startTime: DateTime(2024, 8, 22, 10, 0),
         endTime: DateTime(2024, 8, 22, 12, 0),
       ),
       CalendarEventData(
         date: DateTime(2024, 8, 23),
         color: Colors.red,
-        event: const {"event_type": "Scheduled", "eventId": "APP001"},
+        event: "APP001",
         title: "Mahindra Logistics",
-        description: "Logistics event",
+        description: "Scheduled",
         startTime: DateTime(2024, 8, 23, 14, 0),
         endTime: DateTime(2024, 8, 23, 15, 0),
       ),
       CalendarEventData(
         date: DateTime(2024, 8, 24),
         color: Colors.red,
-        event: const {"event_type": "Scheduled", "eventId": "APP001"},
+        event: "APP001",
         title: "Mahindra Logistics",
-        description: "Logistics event",
+        description: "Scheduled",
         startTime: DateTime(2024, 8, 24, 14, 0),
         endTime: DateTime(2024, 8, 24, 15, 0),
       ),
+      CalendarEventData(
+        date: DateTime(2024, 8, 26),
+        color: Colors.blue,
+        event: "APP001",
+        title: "Mahindra Logistics",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 26, 14, 0),
+        endTime: DateTime(2024, 8, 26, 15, 0),
+      ),
+      CalendarEventData(
+        date: DateTime(2024, 8, 26),
+        color: Colors.red,
+        event: "APP001",
+        title: "Flipkart",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 26, 12, 0),
+        endTime: DateTime(2024, 8, 26, 12, 15),
+      ),
+      CalendarEventData(
+        date: DateTime(2024, 8, 26),
+        color: Colors.blue, // You can choose any color you prefer
+        event: "APP002", // Unique identifier for the event
+        title: "Test", // Event title
+        description: "Scheduled", // Description of the event
+        startTime: DateTime(2024, 8, 26, 12, 0), // Start time
+        endTime: DateTime(2024, 8, 26, 13, 0), // End time (1:00 PM)
+      )
     ]);
   }
 
   // Method to update the current month
   void onMonthChanged(DateTime newMonth) {
     currentMonth.value = newMonth;
+  }
+
+  // Method to change the week
+  void onWeekChanged(DateTime newWeekStart) {
+    selectedDate.value = newWeekStart; // Set the selected date to the start of the new week
+    _updateWeekDates(newWeekStart); // Update week start and end dates
+  }
+
+  // Private method to update week start and end dates based on a given date
+  void _updateWeekDates(DateTime date) {
+    weekStartDate.value = date.subtract(Duration(days: date.weekday - 1)); // Get the start of the week (Monday)
+    weekEndDate.value = weekStartDate.value.add(Duration(days: 6)); // Get the end of the week (Sunday)
   }
 
   // Method to set the selected date
