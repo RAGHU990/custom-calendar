@@ -6,11 +6,11 @@ import 'package:calendar_view/calendar_view.dart';
 import '../controllers/calendar_controller.dart';
 import 'package:intl/intl.dart'; // Import the intl package
 
-class CalendarPage extends StatelessWidget {
+class CalendarPage extends GetView<CalendarController> {
+  const CalendarPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final CalendarController controller = Get.put(CalendarController());
-
     return DefaultTabController(
       length: 3, // Number of tabs
       child: Scaffold(
@@ -102,7 +102,9 @@ class CalendarPage extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildMonthView(CalendarController controller) {
+    // print("object1");
     return Obx(
       () => Container(
         decoration: BoxDecoration(
@@ -115,10 +117,12 @@ class CalendarPage extends StatelessWidget {
           minMonth: DateTime(2024, 1, 1),
           maxMonth: DateTime(2024, 12, 31),
           cellBuilder: (date, events, isToday, isInMonth, isSelected) {
+            // print(date);
+
             bool isSelectedDate =
                 controller.selectedDate.value.year == date.year &&
-                controller.selectedDate.value.month == date.month &&
-                controller.selectedDate.value.day == date.day;
+                    controller.selectedDate.value.month == date.month &&
+                    controller.selectedDate.value.day == date.day;
 
             final List<CalendarEventData> eventsForDate = controller.allEvents
                 .where((event) =>
@@ -159,13 +163,13 @@ class CalendarPage extends StatelessWidget {
                         ),
                       ),
                       if (eventsForDate.isNotEmpty) const SizedBox(height: 4),
-                      if (eventsForDate.isNotEmpty
-                          && eventColors.isNotEmpty)
+                      if (eventsForDate.isNotEmpty && eventColors.isNotEmpty)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: eventColors.map((color) {
                             return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 2.0),
                               child: CircleAvatar(
                                 radius: 3,
                                 backgroundColor: color,
@@ -207,47 +211,60 @@ class CalendarPage extends StatelessWidget {
   }
 
   Widget _buildWeekView(CalendarController controller) {
-  return Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: WeekView(
-      controller: controller.eventController.value,
-      showLiveTimeLineInAllDays: true,
-      minDay: DateTime(2024, 1, 1),
-      maxDay: DateTime(2024, 12, 31),
-      initialDay: DateTime(2024, 8, 22),
-      timeLineBuilder: (total) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Text(
-            '${total.hour.toString().padLeft(2, '0')}:00',
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 12,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: WeekView<Object?>(
+        controller: controller
+            .eventController.value, // Use the observable event controller
+        showLiveTimeLineInAllDays: true,
+        minDay: DateTime(2024, 1, 1),
+        maxDay: DateTime(2024, 12, 31),
+        initialDay: controller
+            .selectedDate.value, // Use the selected date from the controller
+        timeLineBuilder: (total) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(
+              '${total.hour.toString().padLeft(2, '0')}:00',
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 12,
+              ),
             ),
-          ),
-        );
-      },
-      eventTileBuilder: (date, events, boundary, start, end) {
-        // Debugging
-        print("Events on $date: ${events.length}");
+          );
+        },
+            eventTileBuilder: (date, events, boundary, start, end) {
+        // Customize how each event tile is displayed
         return Container(
-          decoration: BoxDecoration(
-            color: Colors.blue.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(
-            events.isNotEmpty ? events.first.title : '',
-            style: const TextStyle(color: Colors.black),
-          ),
-        );
-      },
-      weekPageHeaderBuilder: (startDate, endDate) => Container(),
-    ),
-  );
-}
+          color: Colors.amber,
+          child: Row(
+            children: [
+              Container(
+                color: Colors.black,
+                height: double.maxFinite,
+                width: 3,
+                // height : double.infinity,
+                // width: double.infinity
+              )
+            ]
+          )
 
+        );
+      
+      },
+   
+        weekPageHeaderBuilder: (startDate, endDate) => Container(
+          // padding: const EdgeInsets.all(8),
+          // child: Text(
+          //   '${DateFormat('MMMM d').format(startDate)} - ${DateFormat('MMMM d').format(endDate)}',
+          //   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          // ),
+        ),
+      ),
+    );
+  }
 
   // Day View Widget
   Widget _buildDayView(CalendarController controller) {
@@ -264,18 +281,19 @@ class CalendarPage extends StatelessWidget {
           maxDay: DateTime(2024, 12, 31),
           initialDay: controller.selectedDate.value ??
               DateTime.now(), // Use reactive selectedDate
-  timeLineBuilder: (total) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              '${total.hour.toString().padLeft(2, '0')}:00',
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 12,
+          timeLineBuilder: (total) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                '${total.hour.toString().padLeft(2, '0')}:00',
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                ),
               ),
-            ),
-          );
-        },          eventTileBuilder: (date, events, boundary, start, end) {
+            );
+          },
+          eventTileBuilder: (date, events, boundary, start, end) {
             return Container(
               decoration: BoxDecoration(
                 color: Colors.blue.withOpacity(0.3),
@@ -375,22 +393,26 @@ class CalendarPage extends StatelessWidget {
                                     margin: const EdgeInsets.symmetric(
                                         vertical: 4.0),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Row(
                                           children: [
                                             Container(
-                                              color: event.color, // Use event color
+                                              color: event
+                                                  .color, // Use event color
                                               height: 70,
                                               width: 5,
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
                                               child: Row(
                                                 children: [
                                                   Column(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       Text(
                                                         event
@@ -405,27 +427,27 @@ class CalendarPage extends StatelessWidget {
                                                         "helli",
                                                         // "${event.event?['event_type'] ?? 'N/A'} | ${event.event?['eventId'] ?? 'N/A'}", // Event details
                                                         style: TextStyle(
-                                                            color: Color.fromARGB(
-                                                                255,
-                                                                100,
-                                                                100,
-                                                                100)),
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    100,
+                                                                    100,
+                                                                    100)),
                                                       ),
                                                     ],
                                                   ),
-                                                
                                                 ],
                                               ),
                                             ),
                                           ],
                                         ),
-                                         const Padding(
-                                           padding: EdgeInsets.all(18.0),
-                                           child: Icon(
-                                                      Icons.keyboard_arrow_right,
-                                                      size: 30,
-                                                    ),
-                                         )
+                                        const Padding(
+                                          padding: EdgeInsets.all(18.0),
+                                          child: Icon(
+                                            Icons.keyboard_arrow_right,
+                                            size: 30,
+                                          ),
+                                        )
                                       ],
                                     ),
                                   );
@@ -451,5 +473,4 @@ class CalendarPage extends StatelessWidget {
       ],
     );
   }
-
 }

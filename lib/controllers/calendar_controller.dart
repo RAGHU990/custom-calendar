@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 class CalendarController extends GetxController {
   // Observable EventController instance
-  final Rx<EventController> eventController = EventController().obs;
+  Rx<EventController> eventController = EventController().obs;
 
   // Observable selected date
   var selectedDate = DateTime.now().obs;
@@ -21,10 +21,13 @@ class CalendarController extends GetxController {
   // List of all events as an observable
   final RxList<CalendarEventData> allEvents = <CalendarEventData>[].obs;
 
+
   @override
   void onInit() {
     super.onInit();
+    _addMonth();
     _addEvents();
+    
   }
 
   // Method to update the selected date
@@ -40,7 +43,76 @@ class CalendarController extends GetxController {
   // Add initial events
   void _addEvents() {
     // Initialize the events list
-    allEvents.addAll([
+    eventController.value.addAll([
+      CalendarEventData(
+        date: DateTime(2024, 8, 22),
+        color: Colors.blue,
+        event: "APP001",
+        title: "Mahindra Logistics",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 22, 10, 0),
+        endTime: DateTime(2024, 8, 22, 12, 0),
+      ),
+      CalendarEventData(
+        date: DateTime(2024, 8, 22),
+        color: Colors.red,
+        event: "APP001",
+        title: "Mahindra Logistics",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 22, 10, 0),
+        endTime: DateTime(2024, 8, 22, 12, 0),
+      ),
+      CalendarEventData(
+        date: DateTime(2024, 8, 23),
+        color: Colors.red,
+        event: "APP001",
+        title: "Mahindra Logistics",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 23, 14, 0),
+        endTime: DateTime(2024, 8, 23, 15, 0),
+      ),
+      CalendarEventData(
+        date: DateTime(2024, 8, 24),
+        color: Colors.red,
+        event: "APP001",
+        title: "Mahindra Logistics",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 24, 14, 0),
+        endTime: DateTime(2024, 8, 24, 15, 0),
+      ),
+      CalendarEventData(
+        date: DateTime(2024, 8, 26),
+        color: Colors.blue,
+        event: "APP001",
+        title: "Mahindra Logistics",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 26, 14, 0),
+        endTime: DateTime(2024, 8, 26, 15, 0),
+      ),
+      CalendarEventData(
+        date: DateTime(2024, 8, 26),
+        color: Colors.red,
+        event: "APP001",
+        title: "Flipkart",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 26, 12, 0),
+        endTime: DateTime(2024, 8, 26, 12, 15),
+      ),
+      CalendarEventData(
+        date: DateTime(2024, 8, 26),
+        color: Colors.blue, // You can choose any color you prefer
+        event: "APP002", // Unique identifier for the event
+        title: "Test", // Event title
+        description: "Scheduled", // Description of the event
+        startTime: DateTime(2024, 8, 26, 12, 0), // Start time
+        endTime: DateTime(2024, 8, 26, 13, 0), // End time (1:00 PM)
+      )
+    ]);
+  }
+
+   void _addMonth() {
+    // Initialize the events list
+   allEvents.addAll( [
       CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.blue,

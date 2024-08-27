@@ -7,6 +7,8 @@
 // }
 
 // class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
 //   @override
 //   Widget build(BuildContext context) {
 //     return CalendarControllerProvider(
@@ -527,6 +529,7 @@
 // }
 
 
+import 'package:calender/bindings/binding.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'views/calendar_page.dart';
@@ -544,7 +547,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Calendar App',
       theme: ThemeData(primarySwatch: Colors.purple),
-      home: CalendarPage(),
+      home: const CalendarPage(),
+      initialBinding: CalendarBinding(),
     );
   }
 }
