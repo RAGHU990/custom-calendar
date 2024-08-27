@@ -375,49 +375,57 @@ class CalendarPage extends StatelessWidget {
                                     margin: const EdgeInsets.symmetric(
                                         vertical: 4.0),
                                     child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Container(
-                                          color: event.color, // Use event color
-                                          height: 70,
-                                          width: 5,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            children: [
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                        Row(
+                                          children: [
+                                            Container(
+                                              color: event.color, // Use event color
+                                              height: 70,
+                                              width: 5,
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Row(
                                                 children: [
-                                                  Text(
-                                                    event
-                                                        .title, // Event title from the event data
-                                                    style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        event
+                                                            .title, // Event title from the event data
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 16),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      const Text(
+                                                        "helli",
+                                                        // "${event.event?['event_type'] ?? 'N/A'} | ${event.event?['eventId'] ?? 'N/A'}", // Event details
+                                                        style: TextStyle(
+                                                            color: Color.fromARGB(
+                                                                255,
+                                                                100,
+                                                                100,
+                                                                100)),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  const SizedBox(height: 4),
-                                                  Text(
-                                                    "helli",
-                                                    // "${event.event?['event_type'] ?? 'N/A'} | ${event.event?['eventId'] ?? 'N/A'}", // Event details
-                                                    style: const TextStyle(
-                                                        color: Color.fromARGB(
-                                                            255,
-                                                            100,
-                                                            100,
-                                                            100)),
-                                                  ),
+                                                
                                                 ],
                                               ),
-                                              const SizedBox(width: 160),
-                                              const Icon(
-                                                Icons.keyboard_arrow_right,
-                                                size: 30,
-                                              )
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
+                                         const Padding(
+                                           padding: EdgeInsets.all(18.0),
+                                           child: Icon(
+                                                      Icons.keyboard_arrow_right,
+                                                      size: 30,
+                                                    ),
+                                         )
                                       ],
                                     ),
                                   );
