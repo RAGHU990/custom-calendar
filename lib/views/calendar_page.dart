@@ -425,7 +425,6 @@ class CalendarPage extends GetView<CalendarController> {
                                                       const SizedBox(height: 4),
                                                       const Text(
                                                         "helli",
-                                                        // "${event.event?['event_type'] ?? 'N/A'} | ${event.event?['eventId'] ?? 'N/A'}", // Event details
                                                         style: TextStyle(
                                                             color:
                                                                 Color.fromARGB(
