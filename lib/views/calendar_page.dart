@@ -114,8 +114,8 @@ class CalendarPage extends GetView<CalendarController> {
           headerBuilder: (DateTime date) => Container(),
           controller: controller.eventController.value,
           initialMonth: DateTime.now(),
-          minMonth: DateTime(2024, 1, 1),
-          maxMonth: DateTime(2024, 12, 31),
+          minMonth: DateTime(1900),
+          maxMonth: DateTime(2100),
           cellBuilder: (date, events, isToday, isInMonth, isSelected) {
             // print(date);
 
@@ -235,33 +235,28 @@ class CalendarPage extends GetView<CalendarController> {
             ),
           );
         },
-            eventTileBuilder: (date, events, boundary, start, end) {
-        // Customize how each event tile is displayed
-        return Container(
-          color: Colors.amber,
-          child: Row(
-            children: [
-              Container(
-                color: Colors.black,
-                height: double.maxFinite,
-                width: 3,
-                // height : double.infinity,
-                // width: double.infinity
-              )
-            ]
-          )
+        eventTileBuilder: (date, events, boundary, start, end) {
+          // Customize how each event tile is displayed
+          return Container(
+              color: const Color.fromARGB(255, 226, 226, 224),
+              child: Row(children: [
+                Container(
+                  color: events.first.color,
+                  height: double.maxFinite,
+                  width: 3,
+                  // height : double.infinity,
+                  // width: double.infinity
+                )
+              ]));
+        },
 
-        );
-      
-      },
-   
         weekPageHeaderBuilder: (startDate, endDate) => Container(
-          // padding: const EdgeInsets.all(8),
-          // child: Text(
-          //   '${DateFormat('MMMM d').format(startDate)} - ${DateFormat('MMMM d').format(endDate)}',
-          //   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          // ),
-        ),
+            // padding: const EdgeInsets.all(8),
+            // child: Text(
+            //   '${DateFormat('MMMM d').format(startDate)} - ${DateFormat('MMMM d').format(endDate)}',
+            //   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            // ),
+            ),
       ),
     );
   }
@@ -295,15 +290,56 @@ class CalendarPage extends GetView<CalendarController> {
           },
           eventTileBuilder: (date, events, boundary, start, end) {
             return Container(
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                events.isNotEmpty ? events.first.title : '',
-                style: const TextStyle(color: Colors.black),
-              ),
-            );
+                margin:
+                    const EdgeInsets.all(4), // Add margin around the event tile
+                decoration: BoxDecoration(
+                  color:
+                      Color.fromARGB(255, 236, 236, 236), // Use the event color
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      color: events.isNotEmpty
+                          ? events.first.color
+                          : Colors.transparent, // Use the event color
+                      height: 100,
+                      width: 4,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(events.isNotEmpty ? events.first.title : '',
+                              style: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.bold)),
+                          Text(events.first.event.toString(),
+                              style: const TextStyle(
+                                fontSize: 8,
+                              )),
+                          Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(255, 151, 195, 231),
+                                  borderRadius: BorderRadius.circular(10)
+                                ),
+                                height: 18,
+                                width: 60,
+                                child: Center(
+                                  child: const Text(
+                                    "Scheduled",
+                                    style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
+                                  ),
+                                )),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ));
           },
           dayTitleBuilder: (date) => Container(),
         ),

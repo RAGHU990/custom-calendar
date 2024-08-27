@@ -104,8 +104,8 @@ class CalendarController extends GetxController {
         event: "APP002", // Unique identifier for the event
         title: "Test", // Event title
         description: "Scheduled", // Description of the event
-        startTime: DateTime(2024, 8, 26, 12, 0), // Start time
-        endTime: DateTime(2024, 8, 26, 13, 0), // End time (1:00 PM)
+        startTime: DateTime(2024, 8, 26, 15, 0), // Start time
+        endTime: DateTime(2024, 8, 26, 18, 0), // End time (1:00 PM)
       )
     ]);
   }
@@ -173,8 +173,8 @@ class CalendarController extends GetxController {
         event: "APP002", // Unique identifier for the event
         title: "Test", // Event title
         description: "Scheduled", // Description of the event
-        startTime: DateTime(2024, 8, 26, 12, 0), // Start time
-        endTime: DateTime(2024, 8, 26, 13, 0), // End time (1:00 PM)
+        startTime: DateTime(2024, 8, 26, 15, 0), // Start time
+        endTime: DateTime(2024, 8, 26, 17, 0), // End time (1:00 PM)
       )
     ]);
   }
