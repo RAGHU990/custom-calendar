@@ -154,14 +154,29 @@ class CalendarPage extends GetView<CalendarController> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        '${date.day}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: isInMonth ? Colors.black : Colors.grey,
-                          fontSize: 14,
+                      if (isToday)
+                        CircleAvatar(
+                          radius: 14,
+                          backgroundColor: Colors.blue,
+                          child: Text(
+                            '${date.day}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        )
+                      else
+                        Text(
+                          '${date.day}',
+                          style: TextStyle(
+                            fontWeight:
+                                isToday ? FontWeight.bold : FontWeight.bold,
+                            color: isInMonth ? Colors.black : Colors.grey,
+                            fontSize: 14,
+                          ),
                         ),
-                      ),
                       if (eventsForDate.isNotEmpty) const SizedBox(height: 4),
                       if (eventsForDate.isNotEmpty && eventColors.isNotEmpty)
                         Row(
@@ -277,14 +292,20 @@ class CalendarPage extends GetView<CalendarController> {
           initialDay: controller.selectedDate.value ??
               DateTime.now(), // Use reactive selectedDate
           timeLineBuilder: (total) {
+            final DateTime selectedDate =
+                controller.selectedDate.value ?? DateTime.now();
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                '${total.hour.toString().padLeft(2, '0')}:00',
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
-                ),
+              child: Column(
+                children: [
+                  Text(
+                    '${total.hour.toString().padLeft(2, '0')}:00',
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
               ),
             );
           },
@@ -323,15 +344,17 @@ class CalendarPage extends GetView<CalendarController> {
                             padding: const EdgeInsets.all(2.0),
                             child: Container(
                                 decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 151, 195, 231),
-                                  borderRadius: BorderRadius.circular(10)
-                                ),
+                                    color: const Color.fromARGB(
+                                        255, 151, 195, 231),
+                                    borderRadius: BorderRadius.circular(10)),
                                 height: 18,
                                 width: 60,
-                                child: Center(
-                                  child: const Text(
+                                child: const Center(
+                                  child: Text(
                                     "Scheduled",
-                                    style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        fontSize: 8,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 )),
                           )
@@ -341,7 +364,35 @@ class CalendarPage extends GetView<CalendarController> {
                   ],
                 ));
           },
-          dayTitleBuilder: (date) => Container(),
+          dayTitleBuilder: (
+            date,
+          ) =>
+              Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  DateFormat('EEE')
+                      .format(controller.selectedDate.value)
+                      .toUpperCase(), // Day of the week
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Colors.black,
+                  ),
+                ),
+                Text(
+                  '${controller.selectedDate.value.day}', // Day of the month
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 20,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

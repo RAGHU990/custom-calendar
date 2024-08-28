@@ -13,7 +13,6 @@ class CalendarController extends GetxController {
   // Observable current month
   var currentMonth = DateTime.now().obs;
 
-  
   // Observable current week start and end dates
   var weekStartDate = DateTime.now().obs;
   var weekEndDate = DateTime.now().obs;
@@ -21,13 +20,11 @@ class CalendarController extends GetxController {
   // List of all events as an observable
   final RxList<CalendarEventData> allEvents = <CalendarEventData>[].obs;
 
-
   @override
   void onInit() {
     super.onInit();
     _addMonth();
     _addEvents();
-    
   }
 
   // Method to update the selected date
@@ -110,9 +107,9 @@ class CalendarController extends GetxController {
     ]);
   }
 
-   void _addMonth() {
+  void _addMonth() {
     // Initialize the events list
-   allEvents.addAll( [
+    allEvents.addAll([
       CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.blue,
@@ -123,6 +120,15 @@ class CalendarController extends GetxController {
         endTime: DateTime(2024, 8, 22, 12, 0),
       ),
       CalendarEventData(
+        date: DateTime(2024, 8, 22),
+        color: Colors.red,
+        event: "APP001",
+        title: "Mahindra Logistics",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 22, 10, 0),
+        endTime: DateTime(2024, 8, 22, 12, 0),
+      ),
+         CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.red,
         event: "APP001",
@@ -186,14 +192,17 @@ class CalendarController extends GetxController {
 
   // Method to change the week
   void onWeekChanged(DateTime newWeekStart) {
-    selectedDate.value = newWeekStart; // Set the selected date to the start of the new week
+    selectedDate.value =
+        newWeekStart; // Set the selected date to the start of the new week
     _updateWeekDates(newWeekStart); // Update week start and end dates
   }
 
   // Private method to update week start and end dates based on a given date
   void _updateWeekDates(DateTime date) {
-    weekStartDate.value = date.subtract(Duration(days: date.weekday - 1)); // Get the start of the week (Monday)
-    weekEndDate.value = weekStartDate.value.add(Duration(days: 6)); // Get the end of the week (Sunday)
+    weekStartDate.value = date.subtract(
+        Duration(days: date.weekday - 1)); // Get the start of the week (Monday)
+    weekEndDate.value = weekStartDate.value
+        .add(Duration(days: 6)); // Get the end of the week (Sunday)
   }
 
   // Method to set the selected date
@@ -232,5 +241,11 @@ class CalendarController extends GetxController {
     }
 
     return colorsByDate;
+  }
+
+  @override
+  void onClose() {
+    debugPrint("onclose");
+    super.onClose();
   }
 }
