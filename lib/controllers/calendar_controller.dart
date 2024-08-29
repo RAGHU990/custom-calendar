@@ -19,6 +19,8 @@ class CalendarController extends GetxController {
 
   // List of all events as an observable
   final RxList<CalendarEventData> allEvents = <CalendarEventData>[].obs;
+  final RxList<CalendarEventData> selectedEvent = <CalendarEventData>[].obs;
+
 
   @override
   void onInit() {
@@ -27,6 +29,7 @@ class CalendarController extends GetxController {
     _addEvents();
   }
 
+   
   // Method to update the selected date
   void onDateSelected(DateTime date) {
     selectedDate.value = date;

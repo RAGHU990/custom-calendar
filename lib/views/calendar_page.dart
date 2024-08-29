@@ -1,6 +1,5 @@
 // views/calendar_view.dart
 
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:calendar_view/calendar_view.dart';
@@ -140,6 +139,7 @@ class CalendarPage extends GetView<CalendarController> {
             return GestureDetector(
               onTap: () {
                 controller.setSelectedDate(date);
+                controller.selectedEvent.clear();
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -226,147 +226,117 @@ class CalendarPage extends GetView<CalendarController> {
     );
   }
 
-
-Widget _buildWeekView(CalendarController controller, BuildContext context) {
-  return Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: WeekView<Object?>(
-      controller: controller.eventController.value, // Use the observable event controller
-      showLiveTimeLineInAllDays: true,
-      minDay: DateTime(2024, 1, 1),
-      maxDay: DateTime(2024, 12, 31),
-      initialDay: controller.selectedDate.value, // Use the selected date from the controller
-      timeLineBuilder: (total) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Text(
-            '${total.hour.toString().padLeft(2, '0')}:00',
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 12,
+  Widget _buildWeekView(CalendarController controller, BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: WeekView<Object?>(
+        controller: controller
+            .eventController.value, // Use the observable event controller
+        showLiveTimeLineInAllDays: true,
+        minDay: DateTime(2024, 1, 1),
+        maxDay: DateTime(2024, 12, 31),
+        initialDay: controller
+            .selectedDate.value, // Use the selected date from the controller
+        timeLineBuilder: (total) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(
+              '${total.hour.toString().padLeft(2, '0')}:00',
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 12,
+              ),
             ),
-          ),
-        );
-      },
-      eventTileBuilder: (date, events, boundary, start, end) {
-        // Check if the date is today
-        bool isToday = date.isAtSameMomentAs(DateTime.now());
+          );
+        },
+        eventTileBuilder: (date, events, boundary, start, end) {
+          // Check if the date is today
+          bool isToday = date.isAtSameMomentAs(DateTime.now());
 
-        return Container(
-          color: const Color.fromARGB(255, 226, 226, 224),
-          child: Row(
-            children: [
-              if (isToday) ...[
-                const CircleAvatar(
-                  backgroundColor: Colors.blue, // Blue background
-                  child: Text(
-                    'Today', // Text to display
-                    style: TextStyle(
-                      color: Colors.white, // White text color
-                      fontWeight: FontWeight.bold,
+          return Container(
+            color: const Color.fromARGB(255, 226, 226, 224),
+            child: Row(
+              children: [
+                if (isToday) ...[
+                  const CircleAvatar(
+                    backgroundColor: Colors.blue, // Blue background
+                    child: Text(
+                      'Today', // Text to display
+                      style: TextStyle(
+                        color: Colors.white, // White text color
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8), // Spacing between avatar and events
+                ],
+                // Render event indicator if there are events
+                if (events.isNotEmpty) ...[
+                  Container(
+                    color: events.first.color,
+                    height: double.maxFinite,
+                    width: 3,
+                  ),
+                ],
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            events.isNotEmpty ? events.first.title : '',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              overflow:
+                                  TextOverflow.ellipsis, // Handle overflow
+                            ),
+                            maxLines: 1, // Limit to one line
+                          ),
+                        ),
+                        Flexible(
+                          child: Text(
+                            events.isNotEmpty
+                                ? events.first.event.toString()
+                                : '',
+                            style: const TextStyle(
+                              fontSize: 10,
+                              overflow:
+                                  TextOverflow.ellipsis, // Handle overflow
+                            ),
+                            maxLines: 1, // Limit to one line
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                const SizedBox(width: 8), // Spacing between avatar and events
               ],
-              // Render event indicator if there are events
-              if (events.isNotEmpty) ...[
-                Container(
-                  color: events.first.color,
-                  height: double.maxFinite,
-                  width: 3,
-                ),
-              ],
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          events.isNotEmpty ? events.first.title : '',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            overflow: TextOverflow.ellipsis, // Handle overflow
-                          ),
-                          maxLines: 1, // Limit to one line
-                        ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          events.isNotEmpty ? events.first.event.toString() : '',
-                          style: const TextStyle(
-                            fontSize: 10,
-                            overflow: TextOverflow.ellipsis, // Handle overflow
-                          ),
-                          maxLines: 1, // Limit to one line
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-      weekPageHeaderBuilder: (startDate, endDate) => Container(
-        // Header customization can be added here
-      ),
-      onEventTap: (events, date) {
-        // Show alert dialog with event details
-        if (events.isNotEmpty) {
-          _showEventDetailsDialog(context, events.first);
-        }
-      },
-    ),
-  );
-}
-
-void _showEventDetailsDialog(BuildContext context, CalendarEventData<Object?> event) {
-  // Format start and end time
-  String startTime = "";
-  String endTime = "";
-  
-  // Show dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Event Details'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Date: ${DateFormat('EEEE, MMMM d, yyyy').format(event.date)}'),
-            Text('Start Time: $startTime'),
-            Text('End Time: $endTime'),
-            Text('Title: ${event.title}'),
-            Text('Event Code: ${event.event}'),
-            Text('Description: ${event.description}'),
-            Container(
-              height: 20,
-              width: 20,
-              color: event.color, // Show the event color
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
-            },
-            child: const Text('Close'),
-          ),
-        ],
-      );
-    },
-  );
-}
+          );
+        },
+        weekPageHeaderBuilder: (startDate, endDate) => Container(
+            // Header customization can be added here
+            ),
+        onEventTap: (events, date) {
+          // Show alert dialog with event details
+          if (events.isNotEmpty) {
+            // _showEventDetailsDialog(context, events.first);
+            // print(events.first);
+            controller.selectedEvent.value = events;
+            print(controller.selectedEvent);
+            
+          }
+        },
+      ),
+    );
+  }
+
 
   Widget _buildDayView(CalendarController controller) {
     return Obx(
@@ -505,6 +475,16 @@ void _showEventDetailsDialog(BuildContext context, CalendarEventData<Object?> ev
               ],
             ),
           ),
+           onEventTap: (events, date) {
+          // Show alert dialog with event details
+          if (events.isNotEmpty) {
+            // _showEventDetailsDialog(context, events.first);
+            // print(events.first);
+            controller.selectedEvent.value = events;
+            print(controller.selectedEvent);
+            
+          }
+        },
         ),
       ),
     );
@@ -543,9 +523,13 @@ void _showEventDetailsDialog(BuildContext context, CalendarEventData<Object?> ev
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          DateFormat('EEE')
-                              .format(selectedDate)
-                              .toUpperCase(), // Day of the week
+                          controller.selectedEvent.isNotEmpty
+                              ? DateFormat('EEE')
+                                  .format(controller.selectedEvent.first.date)
+                                  .toUpperCase()
+                              : DateFormat('EEE')
+                                  .format(selectedDate)
+                                  .toUpperCase(),
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -553,13 +537,18 @@ void _showEventDetailsDialog(BuildContext context, CalendarEventData<Object?> ev
                           ),
                         ),
                         Text(
-                          '${selectedDate.day}', // Day of the month
+                          controller.selectedEvent.isNotEmpty
+                              ? DateFormat('d')
+                                  .format(controller.selectedEvent.first.date)
+                                  .toUpperCase()
+                              : '${selectedDate.day}',
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 20,
                             color: Colors.black,
                           ),
                         ),
+                       
                       ],
                     ),
                   ),
@@ -569,97 +558,76 @@ void _showEventDetailsDialog(BuildContext context, CalendarEventData<Object?> ev
                     children: [
                       SizedBox(
                         height: 200, // Set a fixed height for the ListView
-                        child: eventsForSelectedDate.isNotEmpty
-                            ? ListView.builder(
-                                itemCount: eventsForSelectedDate.length,
-                                itemBuilder: (context, index) {
-                                  final event = eventsForSelectedDate[index];
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(2),
-                                      border: Border.all(color: Colors.grey),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.5),
-                                          spreadRadius: 0.5,
-                                          blurRadius: 0.5,
-                                          offset: const Offset(0, 1),
-                                        )
-                                      ],
-                                    ),
-                                    height: 70,
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 4.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              color: event
-                                                  .color, // Use event color
-                                              height: 70,
-                                              width: 5,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        event
-                                                            .title, // Event title from the event data
-                                                        style: const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 16),
-                                                      ),
-                                                      const SizedBox(height: 4),
-                                                      const Text(
-                                                        "helli",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Color.fromARGB(
-                                                                    255,
-                                                                    100,
-                                                                    100,
-                                                                    100)),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const Padding(
-                                          padding: EdgeInsets.all(18.0),
-                                          child: Icon(
-                                            Icons.keyboard_arrow_right,
-                                            size: 30,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                },
-                              )
-                            : const Center(
-                                child: Text(
-                                  "No Events",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ),
+             child:    ListView.builder(
+  itemCount: controller.selectedEvent.isNotEmpty ?  controller.selectedEvent.length :eventsForSelectedDate.length ,
+  itemBuilder: (context, index) {
+    final event = controller.selectedEvent.isNotEmpty
+    ? controller.selectedEvent[index]
+
+        : eventsForSelectedDate[index];
+        
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(2),
+        border: Border.all(color: Colors.grey),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 0.5,
+            blurRadius: 0.5,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      height: 70,
+      margin: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Container(
+                color: event.color, // Use event color
+                height: 70,
+                width: 5,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      event.title, // Event title from the event data
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      "helli",
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 100, 100, 100),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const Padding(
+            padding: EdgeInsets.all(18.0),
+            child: Icon(
+              Icons.keyboard_arrow_right,
+              size: 30,
+            ),
+          ),
+        ],
+      ),
+    );
+  },
+)
                       ),
                     ],
                   ),
