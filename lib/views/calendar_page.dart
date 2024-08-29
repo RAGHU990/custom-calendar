@@ -1,6 +1,7 @@
 // views/calendar_view.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:calendar_view/calendar_view.dart';
 import '../controllers/calendar_controller.dart';
@@ -234,9 +235,9 @@ class CalendarPage extends GetView<CalendarController> {
       child: WeekView<Object?>(
         controller: controller
             .eventController.value, // Use the observable event controller
-              onPageChange: (DateTime date, int pageIndex) {
-            controller.onMonthChanged(date);
-          },
+        onPageChange: (DateTime date, int pageIndex) {
+          controller.onMonthChanged(date);
+        },
         showLiveTimeLineInAllDays: true,
         minDay: DateTime(2024, 1, 1),
         maxDay: DateTime(2024, 12, 31),
@@ -349,6 +350,7 @@ class CalendarPage extends GetView<CalendarController> {
           controller: controller.eventController.value,
           onPageChange: (DateTime date, int pageIndex) {
             controller.onMonthChanged(date);
+            controller.selectedDate.value = date;
           },
           // Use the observable eventController
           showVerticalLine: true,
@@ -571,6 +573,9 @@ class CalendarPage extends GetView<CalendarController> {
                               final event = controller.selectedEvent.isNotEmpty
                                   ? controller.selectedEvent[index]
                                   : eventsForSelectedDate[index];
+                              final startTime = event.startTime ??
+                                  DateTime.now(); // Default to now if null
+                              final endTime = event.endTime ?? DateTime.now();
 
                               return Container(
                                 decoration: BoxDecoration(
@@ -586,7 +591,7 @@ class CalendarPage extends GetView<CalendarController> {
                                     ),
                                   ],
                                 ),
-                                height: 70,
+                               
                                 margin:
                                     const EdgeInsets.symmetric(vertical: 4.0),
                                 child: Row(
@@ -595,13 +600,9 @@ class CalendarPage extends GetView<CalendarController> {
                                   children: [
                                     Row(
                                       children: [
-                                        Container(
-                                          color: event.color, // Use event color
-                                          height: 70,
-                                          width: 5,
-                                        ),
+                                        Container(width:5, color: event.color, height: 70,),
                                         Padding(
-                                          padding: const EdgeInsets.all(8.0),
+                                          padding: const EdgeInsets.all(10.0),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -615,12 +616,24 @@ class CalendarPage extends GetView<CalendarController> {
                                                 ),
                                               ),
                                               const SizedBox(height: 4),
-                                              const Text(
-                                                "helli",
-                                                style: TextStyle(
-                                                  color: Color.fromARGB(
-                                                      255, 100, 100, 100),
-                                                ),
+                                              Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(right: 5),
+                                                    child: CircleAvatar(radius: 3,
+                                                    backgroundColor: event.color,),
+                                                  ),
+                                                  
+                                                  Text(
+                                                    "${event.description} | ${event.event.toString()} | ${DateFormat('HH:mm').format(startTime)} - ${DateFormat('HH:mm').format(endTime)}",
+                                                    style: const TextStyle(
+                                                      color: Color.fromARGB(
+                                                          255, 100, 100, 100),
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.bold
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
