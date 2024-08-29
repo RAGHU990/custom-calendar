@@ -41,7 +41,53 @@ class CalendarController extends GetxController {
   void _addEvents() {
     // Initialize the events list
     eventController.value.addAll([
+       CalendarEventData(
+        date: DateTime(2024, 8, 22),
+        color: Colors.blue,
+        event: "APP112",
+        title: "Mahindra Logistics",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 22, 10, 0),
+        endTime: DateTime(2024, 8, 22, 12, 0),
+      ),
       CalendarEventData(
+        date: DateTime(2024, 8, 22),
+        color: Colors.red,
+        event: "APP001",
+        title: "Mahindra Logistics",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 22, 10, 0),
+        endTime: DateTime(2024, 8, 22, 12, 0),
+      ),
+        CalendarEventData(
+        date: DateTime(2024, 8, 22),
+        color: Colors.red,
+        event: "APP001",
+        title: "Mahindra",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 22, 10, 0),
+        endTime: DateTime(2024, 8, 22, 12, 0),
+      ),
+          CalendarEventData(
+        date: DateTime(2024, 8, 22),
+        color: Colors.red,
+        event: "AP0292",
+        title: "BMW",
+        description: "Completed",
+        startTime: DateTime(2024, 8, 22, 10, 30),
+        endTime: DateTime(2024, 8, 22, 12, 30),
+      ),
+
+          CalendarEventData(
+        date: DateTime(2024, 8, 22),
+        color: Colors.red,
+        event: "AP7592",
+        title: "Benz",
+        description: "Completed",
+        startTime: DateTime(2024, 8, 22, 10, 30),
+        endTime: DateTime(2024, 8, 22, 12, 30),
+      ),
+           CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.blue,
         event: "APP001",
@@ -50,7 +96,16 @@ class CalendarController extends GetxController {
         startTime: DateTime(2024, 8, 22, 10, 0),
         endTime: DateTime(2024, 8, 22, 12, 0),
       ),
-      CalendarEventData(
+          CalendarEventData(
+        date: DateTime(2024, 8, 22),
+        color: Colors.red,
+        event: "APP001",
+        title: "Mahindra Logistics",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 22, 10, 0),
+        endTime: DateTime(2024, 8, 22, 12, 0),
+      ),
+        CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.red,
         event: "APP001",
@@ -110,7 +165,7 @@ class CalendarController extends GetxController {
   void _addMonth() {
     // Initialize the events list
     allEvents.addAll([
-      CalendarEventData(
+         CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.blue,
         event: "APP001",
@@ -128,7 +183,34 @@ class CalendarController extends GetxController {
         startTime: DateTime(2024, 8, 22, 10, 0),
         endTime: DateTime(2024, 8, 22, 12, 0),
       ),
-         CalendarEventData(
+        CalendarEventData(
+        date: DateTime(2024, 8, 22),
+        color: Colors.red,
+        event: "APP001",
+        title: "Mahindra Logistics",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 22, 10, 0),
+        endTime: DateTime(2024, 8, 22, 12, 0),
+      ),
+           CalendarEventData(
+        date: DateTime(2024, 8, 22),
+        color: Colors.blue,
+        event: "APP001",
+        title: "Mahindra Logistics",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 22, 10, 0),
+        endTime: DateTime(2024, 8, 22, 12, 0),
+      ),
+          CalendarEventData(
+        date: DateTime(2024, 8, 22),
+        color: Colors.red,
+        event: "APP001",
+        title: "Mahindra Logistics",
+        description: "Scheduled",
+        startTime: DateTime(2024, 8, 22, 10, 0),
+        endTime: DateTime(2024, 8, 22, 12, 0),
+      ),
+        CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.red,
         event: "APP001",
@@ -180,7 +262,7 @@ class CalendarController extends GetxController {
         title: "Test", // Event title
         description: "Scheduled", // Description of the event
         startTime: DateTime(2024, 8, 26, 15, 0), // Start time
-        endTime: DateTime(2024, 8, 26, 17, 0), // End time (1:00 PM)
+        endTime: DateTime(2024, 8, 26, 18, 0), // End time (1:00 PM)
       )
     ]);
   }

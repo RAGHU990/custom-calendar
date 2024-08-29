@@ -1,5 +1,6 @@
 // views/calendar_view.dart
 
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:calendar_view/calendar_view.dart';
@@ -84,7 +85,7 @@ class CalendarPage extends GetView<CalendarController> {
                             () => TabBarView(
                               children: [
                                 _buildMonthView(controller),
-                                _buildWeekView(controller),
+                                _buildWeekView(controller, context),
                                 _buildDayView(controller),
                               ],
                             ),
@@ -225,58 +226,148 @@ class CalendarPage extends GetView<CalendarController> {
     );
   }
 
-  Widget _buildWeekView(CalendarController controller) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: WeekView<Object?>(
-        controller: controller
-            .eventController.value, // Use the observable event controller
-        showLiveTimeLineInAllDays: true,
-        minDay: DateTime(2024, 1, 1),
-        maxDay: DateTime(2024, 12, 31),
-        initialDay: controller
-            .selectedDate.value, // Use the selected date from the controller
-        timeLineBuilder: (total) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              '${total.hour.toString().padLeft(2, '0')}:00',
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 12,
-              ),
+
+Widget _buildWeekView(CalendarController controller, BuildContext context) {
+  return Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: WeekView<Object?>(
+      controller: controller.eventController.value, // Use the observable event controller
+      showLiveTimeLineInAllDays: true,
+      minDay: DateTime(2024, 1, 1),
+      maxDay: DateTime(2024, 12, 31),
+      initialDay: controller.selectedDate.value, // Use the selected date from the controller
+      timeLineBuilder: (total) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Text(
+            '${total.hour.toString().padLeft(2, '0')}:00',
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 12,
             ),
-          );
-        },
-        eventTileBuilder: (date, events, boundary, start, end) {
-          // Customize how each event tile is displayed
-          return Container(
-              color: const Color.fromARGB(255, 226, 226, 224),
-              child: Row(children: [
+          ),
+        );
+      },
+      eventTileBuilder: (date, events, boundary, start, end) {
+        // Check if the date is today
+        bool isToday = date.isAtSameMomentAs(DateTime.now());
+
+        return Container(
+          color: const Color.fromARGB(255, 226, 226, 224),
+          child: Row(
+            children: [
+              if (isToday) ...[
+                const CircleAvatar(
+                  backgroundColor: Colors.blue, // Blue background
+                  child: Text(
+                    'Today', // Text to display
+                    style: TextStyle(
+                      color: Colors.white, // White text color
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8), // Spacing between avatar and events
+              ],
+              // Render event indicator if there are events
+              if (events.isNotEmpty) ...[
                 Container(
                   color: events.first.color,
                   height: double.maxFinite,
                   width: 3,
-                  // height : double.infinity,
-                  // width: double.infinity
-                )
-              ]));
-        },
-
-        weekPageHeaderBuilder: (startDate, endDate) => Container(
-            // padding: const EdgeInsets.all(8),
-            // child: Text(
-            //   '${DateFormat('MMMM d').format(startDate)} - ${DateFormat('MMMM d').format(endDate)}',
-            //   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            // ),
-            ),
+                ),
+              ],
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          events.isNotEmpty ? events.first.title : '',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            overflow: TextOverflow.ellipsis, // Handle overflow
+                          ),
+                          maxLines: 1, // Limit to one line
+                        ),
+                      ),
+                      Flexible(
+                        child: Text(
+                          events.isNotEmpty ? events.first.event.toString() : '',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            overflow: TextOverflow.ellipsis, // Handle overflow
+                          ),
+                          maxLines: 1, // Limit to one line
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      weekPageHeaderBuilder: (startDate, endDate) => Container(
+        // Header customization can be added here
       ),
-    );
-  }
+      onEventTap: (events, date) {
+        // Show alert dialog with event details
+        if (events.isNotEmpty) {
+          _showEventDetailsDialog(context, events.first);
+        }
+      },
+    ),
+  );
+}
 
-  // Day View Widget
+void _showEventDetailsDialog(BuildContext context, CalendarEventData<Object?> event) {
+  // Format start and end time
+  String startTime = "";
+  String endTime = "";
+  
+  // Show dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Event Details'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Date: ${DateFormat('EEEE, MMMM d, yyyy').format(event.date)}'),
+            Text('Start Time: $startTime'),
+            Text('End Time: $endTime'),
+            Text('Title: ${event.title}'),
+            Text('Event Code: ${event.event}'),
+            Text('Description: ${event.description}'),
+            Container(
+              height: 20,
+              width: 20,
+              color: event.color, // Show the event color
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+            },
+            child: const Text('Close'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
   Widget _buildDayView(CalendarController controller) {
     return Obx(
       () => Container(
@@ -292,8 +383,6 @@ class CalendarPage extends GetView<CalendarController> {
           initialDay: controller.selectedDate.value ??
               DateTime.now(), // Use reactive selectedDate
           timeLineBuilder: (total) {
-            final DateTime selectedDate =
-                controller.selectedDate.value ?? DateTime.now();
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Column(
@@ -311,63 +400,86 @@ class CalendarPage extends GetView<CalendarController> {
           },
           eventTileBuilder: (date, events, boundary, start, end) {
             return Container(
-                margin:
-                    const EdgeInsets.all(4), // Add margin around the event tile
-                decoration: BoxDecoration(
-                  color:
-                      Color.fromARGB(255, 236, 236, 236), // Use the event color
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      color: events.isNotEmpty
-                          ? events.first.color
-                          : Colors.transparent, // Use the event color
-                      height: 100,
-                      width: 4,
-                    ),
-                    Padding(
+              margin:
+                  const EdgeInsets.all(4), // Add margin around the event tile
+              decoration: BoxDecoration(
+                color:
+                    Color.fromARGB(255, 236, 236, 236), // Use the event color
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    color: events.isNotEmpty
+                        ? events.first.color
+                        : Colors.transparent, // Use the event color
+                    height: 100,
+                    width: 4,
+                  ),
+                  Expanded(
+                    // Use Expanded to allow the text to take available space
+                    child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(events.isNotEmpty ? events.first.title : '',
+                          Flexible(
+                            // Use Flexible to allow text to wrap
+                            child: Text(
+                              events.isNotEmpty ? events.first.title : '',
                               style: const TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold)),
-                          Text(events.first.event.toString(),
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                overflow:
+                                    TextOverflow.ellipsis, // Handle overflow
+                              ),
+                              maxLines: 1, // Limit to one line
+                            ),
+                          ),
+                          Flexible(
+                            // Use Flexible for the event description
+                            child: Text(
+                              events.isNotEmpty
+                                  ? events.first.event.toString()
+                                  : '',
                               style: const TextStyle(
                                 fontSize: 8,
-                              )),
+                                overflow:
+                                    TextOverflow.ellipsis, // Handle overflow
+                              ),
+                              maxLines: 1, // Limit to one line
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(2.0),
                             child: Container(
-                                decoration: BoxDecoration(
-                                    color: const Color.fromARGB(
-                                        255, 151, 195, 231),
-                                    borderRadius: BorderRadius.circular(10)),
-                                height: 18,
-                                width: 60,
-                                child: const Center(
-                                  child: Text(
-                                    "Scheduled",
-                                    style: TextStyle(
-                                        fontSize: 8,
-                                        fontWeight: FontWeight.bold),
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 151, 195, 231),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              height: 18,
+                              width: 60,
+                              child: const Center(
+                                child: Text(
+                                  "Scheduled",
+                                  style: TextStyle(
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                )),
-                          )
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  ],
-                ));
+                  ),
+                ],
+              ),
+            );
           },
-          dayTitleBuilder: (
-            date,
-          ) =>
-              Padding(
+          dayTitleBuilder: (date) => Padding(
             padding: const EdgeInsets.all(18.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
