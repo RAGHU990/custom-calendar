@@ -234,6 +234,9 @@ class CalendarPage extends GetView<CalendarController> {
       child: WeekView<Object?>(
         controller: controller
             .eventController.value, // Use the observable event controller
+              onPageChange: (DateTime date, int pageIndex) {
+            controller.onMonthChanged(date);
+          },
         showLiveTimeLineInAllDays: true,
         minDay: DateTime(2024, 1, 1),
         maxDay: DateTime(2024, 12, 31),
@@ -330,13 +333,11 @@ class CalendarPage extends GetView<CalendarController> {
             // print(events.first);
             controller.selectedEvent.value = events;
             print(controller.selectedEvent);
-            
           }
         },
       ),
     );
   }
-
 
   Widget _buildDayView(CalendarController controller) {
     return Obx(
@@ -345,8 +346,11 @@ class CalendarPage extends GetView<CalendarController> {
           borderRadius: BorderRadius.circular(8),
         ),
         child: DayView(
-          controller: controller
-              .eventController.value, // Use the observable eventController
+          controller: controller.eventController.value,
+          onPageChange: (DateTime date, int pageIndex) {
+            controller.onMonthChanged(date);
+          },
+          // Use the observable eventController
           showVerticalLine: true,
           minDay: DateTime(2024, 1, 1),
           maxDay: DateTime(2024, 12, 31),
@@ -456,7 +460,7 @@ class CalendarPage extends GetView<CalendarController> {
               children: [
                 Text(
                   DateFormat('EEE')
-                      .format(controller.selectedDate.value)
+                      .format(date)
                       .toUpperCase(), // Day of the week
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
@@ -465,7 +469,7 @@ class CalendarPage extends GetView<CalendarController> {
                   ),
                 ),
                 Text(
-                  '${controller.selectedDate.value.day}', // Day of the month
+                  '${date.day}', // Day of the month
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
                     fontSize: 20,
@@ -475,16 +479,17 @@ class CalendarPage extends GetView<CalendarController> {
               ],
             ),
           ),
-           onEventTap: (events, date) {
-          // Show alert dialog with event details
-          if (events.isNotEmpty) {
-            // _showEventDetailsDialog(context, events.first);
-            // print(events.first);
-            controller.selectedEvent.value = events;
-            print(controller.selectedEvent);
-            
-          }
-        },
+          onEventTap: (events, date) {
+            // Show alert dialog with event details
+            if (events.isNotEmpty) {
+              // _showEventDetailsDialog(context, events.first);
+              // print(events.first);
+              controller.selectedEvent.value = events;
+              print(controller.selectedEvent);
+              _eventList(controller);
+              controller.currentDate.value = date;
+            }
+          },
         ),
       ),
     );
@@ -525,7 +530,8 @@ class CalendarPage extends GetView<CalendarController> {
                         Text(
                           controller.selectedEvent.isNotEmpty
                               ? DateFormat('EEE')
-                                  .format(controller.selectedEvent.first.date)
+                                  // .format(controller.selectedEvent.first.date)
+                                  .format(controller.currentDate.value)
                                   .toUpperCase()
                               : DateFormat('EEE')
                                   .format(selectedDate)
@@ -548,7 +554,6 @@ class CalendarPage extends GetView<CalendarController> {
                             color: Colors.black,
                           ),
                         ),
-                       
                       ],
                     ),
                   ),
@@ -557,78 +562,83 @@ class CalendarPage extends GetView<CalendarController> {
                   child: Column(
                     children: [
                       SizedBox(
-                        height: 200, // Set a fixed height for the ListView
-             child:    ListView.builder(
-  itemCount: controller.selectedEvent.isNotEmpty ?  controller.selectedEvent.length :eventsForSelectedDate.length ,
-  itemBuilder: (context, index) {
-    final event = controller.selectedEvent.isNotEmpty
-    ? controller.selectedEvent[index]
+                          height: 200, // Set a fixed height for the ListView
+                          child: ListView.builder(
+                            itemCount: controller.selectedEvent.isNotEmpty
+                                ? controller.selectedEvent.length
+                                : eventsForSelectedDate.length,
+                            itemBuilder: (context, index) {
+                              final event = controller.selectedEvent.isNotEmpty
+                                  ? controller.selectedEvent[index]
+                                  : eventsForSelectedDate[index];
 
-        : eventsForSelectedDate[index];
-        
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(2),
-        border: Border.all(color: Colors.grey),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 0.5,
-            blurRadius: 0.5,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      height: 70,
-      margin: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                color: event.color, // Use event color
-                height: 70,
-                width: 5,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      event.title, // Event title from the event data
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      "helli",
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 100, 100, 100),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const Padding(
-            padding: EdgeInsets.all(18.0),
-            child: Icon(
-              Icons.keyboard_arrow_right,
-              size: 30,
-            ),
-          ),
-        ],
-      ),
-    );
-  },
-)
-                      ),
+                              return Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(2),
+                                  border: Border.all(color: Colors.grey),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 0.5,
+                                      blurRadius: 0.5,
+                                      offset: const Offset(0, 1),
+                                    ),
+                                  ],
+                                ),
+                                height: 70,
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 4.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          color: event.color, // Use event color
+                                          height: 70,
+                                          width: 5,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                event
+                                                    .title, // Event title from the event data
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              const Text(
+                                                "helli",
+                                                style: TextStyle(
+                                                  color: Color.fromARGB(
+                                                      255, 100, 100, 100),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.all(18.0),
+                                      child: Icon(
+                                        Icons.keyboard_arrow_right,
+                                        size: 30,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          )),
                     ],
                   ),
                 ),

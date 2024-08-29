@@ -16,6 +16,9 @@ class CalendarController extends GetxController {
   // Observable current week start and end dates
   var weekStartDate = DateTime.now().obs;
   var weekEndDate = DateTime.now().obs;
+    var currentDate = DateTime.now().obs;
+
+  
 
   // List of all events as an observable
   final RxList<CalendarEventData> allEvents = <CalendarEventData>[].obs;
@@ -29,7 +32,6 @@ class CalendarController extends GetxController {
     _addEvents();
   }
 
-   
   // Method to update the selected date
   void onDateSelected(DateTime date) {
     selectedDate.value = date;
@@ -44,7 +46,7 @@ class CalendarController extends GetxController {
   void _addEvents() {
     // Initialize the events list
     eventController.value.addAll([
-       CalendarEventData(
+      CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.blue,
         event: "APP112",
@@ -62,7 +64,7 @@ class CalendarController extends GetxController {
         startTime: DateTime(2024, 8, 22, 10, 0),
         endTime: DateTime(2024, 8, 22, 12, 0),
       ),
-        CalendarEventData(
+      CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.red,
         event: "APP001",
@@ -71,7 +73,7 @@ class CalendarController extends GetxController {
         startTime: DateTime(2024, 8, 22, 10, 0),
         endTime: DateTime(2024, 8, 22, 12, 0),
       ),
-          CalendarEventData(
+      CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.red,
         event: "AP0292",
@@ -80,8 +82,7 @@ class CalendarController extends GetxController {
         startTime: DateTime(2024, 8, 22, 10, 30),
         endTime: DateTime(2024, 8, 22, 12, 30),
       ),
-
-          CalendarEventData(
+      CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.red,
         event: "AP7592",
@@ -90,7 +91,7 @@ class CalendarController extends GetxController {
         startTime: DateTime(2024, 8, 22, 10, 30),
         endTime: DateTime(2024, 8, 22, 12, 30),
       ),
-           CalendarEventData(
+      CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.blue,
         event: "APP001",
@@ -99,7 +100,7 @@ class CalendarController extends GetxController {
         startTime: DateTime(2024, 8, 22, 10, 0),
         endTime: DateTime(2024, 8, 22, 12, 0),
       ),
-          CalendarEventData(
+      CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.red,
         event: "APP001",
@@ -108,7 +109,7 @@ class CalendarController extends GetxController {
         startTime: DateTime(2024, 8, 22, 10, 0),
         endTime: DateTime(2024, 8, 22, 12, 0),
       ),
-        CalendarEventData(
+      CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.red,
         event: "APP001",
@@ -168,7 +169,7 @@ class CalendarController extends GetxController {
   void _addMonth() {
     // Initialize the events list
     allEvents.addAll([
-         CalendarEventData(
+      CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.blue,
         event: "APP001",
@@ -186,7 +187,7 @@ class CalendarController extends GetxController {
         startTime: DateTime(2024, 8, 22, 10, 0),
         endTime: DateTime(2024, 8, 22, 12, 0),
       ),
-        CalendarEventData(
+      CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.red,
         event: "APP001",
@@ -195,7 +196,7 @@ class CalendarController extends GetxController {
         startTime: DateTime(2024, 8, 22, 10, 0),
         endTime: DateTime(2024, 8, 22, 12, 0),
       ),
-           CalendarEventData(
+      CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.blue,
         event: "APP001",
@@ -204,7 +205,7 @@ class CalendarController extends GetxController {
         startTime: DateTime(2024, 8, 22, 10, 0),
         endTime: DateTime(2024, 8, 22, 12, 0),
       ),
-          CalendarEventData(
+      CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.red,
         event: "APP001",
@@ -213,7 +214,7 @@ class CalendarController extends GetxController {
         startTime: DateTime(2024, 8, 22, 10, 0),
         endTime: DateTime(2024, 8, 22, 12, 0),
       ),
-        CalendarEventData(
+      CalendarEventData(
         date: DateTime(2024, 8, 22),
         color: Colors.red,
         event: "APP001",
