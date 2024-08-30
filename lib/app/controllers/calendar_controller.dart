@@ -16,19 +16,17 @@ class CalendarController extends GetxController {
   // Observable current week start and end dates
   var weekStartDate = DateTime.now().obs;
   var weekEndDate = DateTime.now().obs;
-    var currentDate = DateTime.now().obs;
-
-  
+  var currentDate = DateTime.now().obs;
 
   // List of all events as an observable
   final RxList<CalendarEventData> allEvents = <CalendarEventData>[].obs;
   final RxList<CalendarEventData> selectedEvent = <CalendarEventData>[].obs;
 
-
   @override
   void onInit() {
     super.onInit();
     _addMonth();
+
     _addEvents();
   }
 

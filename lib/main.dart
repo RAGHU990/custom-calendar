@@ -1,7 +1,7 @@
-import 'package:calender/bindings/binding.dart';
+import 'package:calender/app/bindings/binding.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'views/calendar_page.dart';
+import 'app/views/calendar_page.dart';
 
 void main() {
   runApp(const MyApp());

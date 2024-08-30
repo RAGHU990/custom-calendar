@@ -1,7 +1,7 @@
 
 
 import 'package:calendar_view/calendar_view.dart';
-import 'package:calender/controllers/calendar_controller.dart';
+import 'package:calender/app/controllers/calendar_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
