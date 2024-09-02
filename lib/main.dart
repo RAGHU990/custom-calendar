@@ -1,4 +1,4 @@
-import 'package:calender/app/bindings/binding.dart';
+import 'package:calender/app/controllers/binding.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'app/views/calendar_page.dart';

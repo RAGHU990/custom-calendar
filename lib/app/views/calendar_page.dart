@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:calendar_view/calendar_view.dart';
 import '../../utils/assets/asset.dart';
-import '../controllers/calendar_controller.dart';
+import '../controllers/controller.dart';
 import 'package:intl/intl.dart'; // Import the intl package
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,510 +14,536 @@ class CalendarPage extends GetView<CalendarController> {
 
   @override
   Widget build(BuildContext context) {
-  return ScreenUtilInit(
-    designSize: const Size(360, 690), // Define your design size
-    builder: (context, child) {
-      return DefaultTabController(
-        length: 3, // Number of tabs
-        child: Scaffold(
-          appBar: _appBar(),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                _addressContainer(),
-                Padding(
-                  padding: EdgeInsets.all(16.sp), // Responsive padding
-                  child: Column(
-                    children: [
-                      _appointmentsButton(),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.grey),
-                        ),
-                        height: 375.h, // Responsive height
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                top: 16.sp,
-                                right: 20.sp,
-                                left: 16.sp,
-                              ),
-                              child: Obx(
-                                () => Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      " ${DateFormat('MMMM').format(controller.currentMonth.value)} ${controller.currentMonth.value.year}",
-                                      style: TextStyle(
-                                        fontSize: 18.sp, // Responsive font size
-                                        fontWeight: FontWeight.bold,
-                                        color: const Color(0xff7c8388),
-                                      ),
-                                    ),
-                                    const Row(
-                                      children: [
-                                        Icon(
-                                          Icons.calendar_today,
-                                          color: Colors.blue,
-                                        ),
-                                        SizedBox(width: 25),
-                                        Icon(
-                                          Icons.list,
-                                          size: 30, // Keep icon size fixed
-                                        ),
-                                      ],
-                                    )
-                                  ],
+    return ScreenUtilInit(
+      designSize: const Size(360, 690), // Define your design size
+      builder: (context, child) {
+        return DefaultTabController(
+          length: 3, // Number of tabs
+          child: Scaffold(
+            appBar: _appBar(),
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _addressContainer(),
+                  Padding(
+                    padding: EdgeInsets.all(16.sp), // Responsive padding
+                    child: Column(
+                      children: [
+                        _appointmentsButton(),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.grey),
+                          ),
+                          height: 375.h, // Responsive height
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  top: 16.sp,
+                                  right: 20.sp,
+                                  left: 16.sp,
                                 ),
-                              ),
-                            ),
-                            const TabBar(
-                              labelColor: Colors.black,
-                              indicator: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: Color(0xff017abf),
-                                    width: 4.0,
+                                child: Obx(
+                                  () => Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        " ${DateFormat('MMMM').format(controller.currentMonth.value)} ${controller.currentMonth.value.year}",
+                                        style: TextStyle(
+                                          fontSize:
+                                              18.sp, // Responsive font size
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xff7c8388),
+                                        ),
+                                      ),
+                                      const Row(
+                                        children: [
+                                          Icon(
+                                            Icons.calendar_today,
+                                            color: Colors.blue,
+                                          ),
+                                          SizedBox(width: 25),
+                                          Icon(
+                                            Icons.list,
+                                            size: 30, // Keep icon size fixed
+                                          ),
+                                        ],
+                                      )
+                                    ],
                                   ),
                                 ),
                               ),
-                              tabs: [
-                                Tab(
-                                  text: '          Month                                       ',
+                              const TabBar(
+                                labelColor: Colors.black,
+                                indicator: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: Color(0xff017abf),
+                                      width: 4.0,
+                                    ),
+                                  ),
                                 ),
-                                Tab(
-                                  text: '             Week                                           ',
-                                ),
-                                Tab(
-                                  text: '           Day                                                  ',
-                                ),
-                              ],
-                            ),
-                            Expanded(
-                              child: Obx(
-                                () => TabBarView(
-                                  children: [
-                                    _buildMonthView(controller),
-                                    _buildWeekView(controller, context),
-                                    _buildDayView(controller),
-                                  ],
+                                tabs: [
+                                  Tab(
+                                    text:
+                                        '          Month                                       ',
+                                  ),
+                                  Tab(
+                                    text:
+                                        '             Week                                           ',
+                                  ),
+                                  Tab(
+                                    text:
+                                        '           Day                                                  ',
+                                  ),
+                                ],
+                              ),
+                              Expanded(
+                                child: Obx(
+                                  () => TabBarView(
+                                    children: [
+                                      _buildMonthView(controller),
+                                      _buildWeekView(controller, context),
+                                      _buildDayView(controller),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Obx(() => _eventList(controller)),
-              ],
+                  Obx(() => _eventList(controller)),
+                ],
+              ),
             ),
           ),
+        );
+      },
+    );
+  }
+
+  PreferredSizeWidget _appBar() {
+    return AppBar(
+      title: Text(
+        'Appointments',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 18.sp, // Make font size responsive
         ),
-      );
-    },
-  );
-}
- PreferredSizeWidget _appBar() {
-  return AppBar(
-    title: Text(
-      'Appointments',
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 18.sp, // Make font size responsive
       ),
-    ),
-    leading: IconButton(
-      onPressed: () {},
-      icon: const Icon(Icons.menu),
-    ),
-    actions: [
-      Padding(
-        padding: EdgeInsets.all(8.sp), // Make padding responsive
-        child: Row(
+      leading: IconButton(
+        onPressed: () {},
+        icon: const Icon(Icons.menu),
+      ),
+      actions: [
+        Padding(
+          padding: EdgeInsets.all(8.sp), // Make padding responsive
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.search),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.filter_alt_outlined),
+              ),
+            ],
+          ),
+        ),
+      ],
+      bottom: PreferredSize(
+        preferredSize: Size.fromHeight(6.h), // Make height responsive
+        child: SizedBox(
+          height: 6.h, // Make height responsive
+          child: SvgPicture.asset(
+            Assets.superGraphic,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _addressContainer() {
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: Colors.black)),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(16.sp), // Responsive padding
+        child: Column(
           children: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.search),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.filter_alt_outlined),
+            Row(
+              children: [
+                Icon(Icons.location_on_outlined,
+                    size: 20.sp, color: Colors.blue), // Responsive icon size
+                SizedBox(width: 5.w), // Responsive spacing
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "BidP",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 12.sp, // Responsive font size
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Icon(Icons.keyboard_arrow_down,
+                            size: 20.sp), // Responsive icon size
+                      ],
+                    ),
+                    Text(
+                      "84, Hosur Rd, Madiwala, Bengaluru, Karnataka 560068",
+                      style: TextStyle(
+                        fontSize: 12.sp, // Responsive font size
+                        color: Colors
+                            .black54, // Optional: Slightly lighter color for the address
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),
       ),
-    ],
-    bottom: PreferredSize(
-      preferredSize: Size.fromHeight(6.h), // Make height responsive
-      child: SizedBox(
-        height: 6.h, // Make height responsive
-        child: SvgPicture.asset(
-          Assets.superGraphic,
-          fit: BoxFit.cover,
-        ),
-      ),
-    ),
-  );
-}
- 
- Widget _addressContainer() {
-  return Container(
-    width: double.infinity,
-    decoration: const BoxDecoration(
-      color: Colors.white,
-      border: Border(bottom: BorderSide(color: Colors.black)),
-    ),
-    child: Padding(
-      padding: EdgeInsets.all(16.sp), // Responsive padding
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Icon(Icons.location_on_outlined, size: 20.sp, color: Colors.blue), // Responsive icon size
-              SizedBox(width: 5.w), // Responsive spacing
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "BidP",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12.sp, // Responsive font size
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Icon(Icons.keyboard_arrow_down, size: 20.sp), // Responsive icon size
-                    ],
-                  ),
-                  Text(
-                    "84, Hosur Rd, Madiwala, Bengaluru, Karnataka 560068",
-                    style: TextStyle(
-                      fontSize: 12.sp, // Responsive font size
-                      color: Colors.black54, // Optional: Slightly lighter color for the address
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-  );
-}
+    );
+  }
 
-Widget _appointmentsButton() {
-  return Column(
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 4, // Keep this fixed or use .sp for responsiveness
-                    backgroundColor: Colors.blue,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 8.sp), // Responsive padding
-                    child: Text(
-                      "Loading",
-                      style: TextStyle(fontSize: 12.sp), // Responsive font size
-                    ),
-                  )
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.sp), // Responsive padding
-                child: Container(
-                  width: 2.w, // Responsive width
-                  height: 20.h, // Responsive height
-                  color: Colors.grey,
-                ),
-              ),
-              Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 4, // Keep this fixed or use .sp for responsiveness
-                    backgroundColor: Colors.red,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 8.sp), // Responsive padding
-                    child: Text(
-                      "Unloading",
-                      style: TextStyle(fontSize: 12.sp), // Responsive font size
-                    ),
-                  )
-                ],
-              ),
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 8.sp), // Responsive padding
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0XFF017abf),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0.sp), // Responsive border radius
-                ),
-              ),
-              onPressed: () {},
-              child: Row(
-                children: [ 
-                  const Icon(Icons.add, color: Colors.white),
-                // Responsive spacing
-                  Text(
-                    "Appointment",
-                    style: TextStyle(color: Colors.white, fontSize: 12.sp), // Responsive font size
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    ],
-  );
-}
-Widget _buildMonthView(CalendarController controller) {
-  return Obx(
-    () => Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.sp), // Responsive border radius
-      ),
-      child: MonthView<Object?>(
-        headerBuilder: (DateTime date) => Container(),
-        controller: controller.eventController.value,
-        initialMonth: DateTime.now(),
-        minMonth: DateTime(1900),
-        maxMonth: DateTime(2100),
-        cellBuilder: (date, events, isToday, isInMonth, isSelected) {
-          bool isSelectedDate =
-              controller.selectedDate.value.year == date.year &&
-                  controller.selectedDate.value.month == date.month &&
-                  controller.selectedDate.value.day == date.day;
-
-          final List<CalendarEventData> eventsForDate = controller.allEvents
-              .where((event) =>
-                  event.date.year == date.year &&
-                  event.date.month == date.month &&
-                  event.date.day == date.day)
-              .toList();
-
-          Set<Color> eventColors = {};
-          for (var event in eventsForDate) {
-            eventColors.add(event.color);
-          }
-
-          return GestureDetector(
-            onTap: () {
-              controller.setSelectedDate(date);
-              controller.selectedEvent.clear();
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: isSelectedDate
-                      ? Colors.grey
-                      : Colors.grey.withOpacity(0.2),
-                  width: isSelectedDate ? 2.sp : 0.01.sp, // Responsive width
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(6.sp), // Responsive padding
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+  Widget _appointmentsButton() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Row(
                   children: [
-                    if (isToday)
-                      CircleAvatar(
-                        radius: 14.sp, // Responsive radius
-                        backgroundColor: Colors.blue,
-                        child: Text(
-                          '${date.day}',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.sp, // Responsive font size
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    else
-                      Text(
-                        '${date.day}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: isInMonth ? Colors.black : Colors.grey,
-                          fontSize: 12.sp, // Responsive font size
-                        ),
+                    const CircleAvatar(
+                      radius:
+                          4, // Keep this fixed or use .sp for responsiveness
+                      backgroundColor: Colors.blue,
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.only(left: 8.sp), // Responsive padding
+                      child: Text(
+                        "Loading",
+                        style:
+                            TextStyle(fontSize: 12.sp), // Responsive font size
                       ),
-                    if (eventsForDate.isNotEmpty) SizedBox(height: 4.sp), // Responsive spacing
-                    if (eventsForDate.isNotEmpty && eventColors.isNotEmpty)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: eventColors.map((color) {
-                          return Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 2.sp), // Responsive padding
-                            child: CircleAvatar(
-                              radius: 3.sp, // Responsive radius
-                              backgroundColor: color,
-                            ),
-                          );
-                        }).toList(),
-                      )
+                    )
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 16.sp), // Responsive padding
+                  child: Container(
+                    width: 2.w, // Responsive width
+                    height: 20.h, // Responsive height
+                    color: Colors.grey,
+                  ),
+                ),
+                Row(
+                  children: [
+                    const CircleAvatar(
+                      radius:
+                          4, // Keep this fixed or use .sp for responsiveness
+                      backgroundColor: Colors.red,
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.only(left: 8.sp), // Responsive padding
+                      child: Text(
+                        "Unloading",
+                        style:
+                            TextStyle(fontSize: 12.sp), // Responsive font size
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.only(bottom: 8.sp), // Responsive padding
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0XFF017abf),
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(0.sp), // Responsive border radius
+                  ),
+                ),
+                onPressed: () {},
+                child: Row(
+                  children: [
+                    const Icon(Icons.add, color: Colors.white),
+                    // Responsive spacing
+                    Text(
+                      "Appointment",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.sp), // Responsive font size
+                    ),
                   ],
                 ),
               ),
             ),
-          );
-        },
-        weekDayBuilder: (int index) {
-          return Column(
-            children: [
-              SizedBox(height: 10.sp), // Responsive spacing
-              Text(
-                ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index],
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey,
-                  fontSize: 12.sp, // Responsive font size
-                ),
-              ),
-              SizedBox(height: 10.sp), // Responsive spacing
-            ],
-          );
-        },
-        pageTransitionDuration: const Duration(milliseconds: 300),
-        pageTransitionCurve: Curves.ease,
-        startDay: WeekDays.sunday,
-        hideDaysNotInMonth: false,
-        pageViewPhysics: const BouncingScrollPhysics(),
-        cellAspectRatio: 0.9,
-        onPageChange: (DateTime date, int pageIndex) {
-          controller.onMonthChanged(date);
-        },
-      ),
-    ),
-  );
-}
- 
- 
-Widget _buildWeekView(CalendarController controller, BuildContext context) {
-  return Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(8.sp), // Responsive border radius
-    ),
-    child: WeekView<Object?>(
-      controller: controller.eventController.value, // Use the observable event controller
-      onPageChange: (DateTime date, int pageIndex) {
-        controller.onMonthChanged(date);
-      },
-      showLiveTimeLineInAllDays: true,
-      minDay: DateTime(2024, 1, 1),
-      maxDay: DateTime(2024, 12, 31),
-      initialDay: controller.selectedDate.value, // Use the selected date from the controller
-      timeLineBuilder: (total) {
-        return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.sp), // Responsive padding
-          child: Text(
-            '${total.hour.toString().padLeft(2, '0')}:00',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 10.sp, // Responsive font size
-            ),
-          ),
-        );
-      },
-      eventTileBuilder: (date, events, boundary, start, end) {
-        // Check if the date is today
-        bool isToday = date.isAtSameMomentAs(DateTime.now());
+          ],
+        ),
+      ],
+    );
+  }
 
-        return Container(
-          color: const Color.fromARGB(255, 226, 226, 224),
-          child: Row(
-            children: [
-              if (isToday) ...[
-                const CircleAvatar(
-                  backgroundColor: Colors.blue, // Blue background
-                  child: Text(
-                    'Today', // Text to display
-                    style: TextStyle(
-                      color: Colors.white, // White text color
-                      fontWeight: FontWeight.bold,
-                    ),
+  Widget _buildMonthView(CalendarController controller) {
+    return Obx(
+      () => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.sp), // Responsive border radius
+        ),
+        child: MonthView<Object?>(
+          headerBuilder: (DateTime date) => Container(),
+          controller: controller.eventController.value,
+          initialMonth: DateTime.now(),
+          minMonth: DateTime(1900),
+          maxMonth: DateTime(2100),
+          cellBuilder: (date, events, isToday, isInMonth, isSelected) {
+            bool isSelectedDate =
+                controller.selectedDate.value.year == date.year &&
+                    controller.selectedDate.value.month == date.month &&
+                    controller.selectedDate.value.day == date.day;
+
+            final List<CalendarEventData> eventsForDate = controller.allEvents
+                .where((event) =>
+                    event.date.year == date.year &&
+                    event.date.month == date.month &&
+                    event.date.day == date.day)
+                .toList();
+
+            Set<Color> eventColors = {};
+            for (var event in eventsForDate) {
+              eventColors.add(event.color);
+            }
+
+            return GestureDetector(
+              onTap: () {
+                controller.setSelectedDate(date);
+                controller.selectedEvent.clear();
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: isSelectedDate
+                        ? Colors.grey
+                        : Colors.grey.withOpacity(0.2),
+                    width: isSelectedDate ? 2.sp : 0.01.sp, // Responsive width
                   ),
                 ),
-                SizedBox(width: 8.sp), // Responsive spacing
-              ],
-              // Render event indicator if there are events
-              if (events.isNotEmpty) ...[
-                Container(
-                  color: events.first.color,
-                  height: double.maxFinite,
-                  width: 3.w, // Responsive width
-                ),
-              ],
-              Expanded(
                 child: Padding(
-                  padding: EdgeInsets.all(3.sp), // Responsive padding
+                  padding: EdgeInsets.all(6.sp), // Responsive padding
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Flexible(
-                        child: Text(
-                          events.isNotEmpty ? events.first.title : '',
+                      if (isToday)
+                        CircleAvatar(
+                          radius: 14.sp, // Responsive radius
+                          backgroundColor: Colors.blue,
+                          child: Text(
+                            '${date.day}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.sp, // Responsive font size
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        )
+                      else
+                        Text(
+                          '${date.day}',
                           style: TextStyle(
-                            fontSize: 12.sp, // Responsive font size
                             fontWeight: FontWeight.bold,
-                            overflow: TextOverflow.ellipsis, // Handle overflow
+                            color: isInMonth ? Colors.black : Colors.grey,
+                            fontSize: 12.sp, // Responsive font size
                           ),
-                          maxLines: 1, // Limit to one line
                         ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          events.isNotEmpty
-                              ? events.first.event.toString()
-                              : '',
-                          style: TextStyle(
-                            fontSize: 10.sp, // Responsive font size
-                            overflow: TextOverflow.ellipsis, // Handle overflow
-                          ),
-                          maxLines: 1, // Limit to one line
-                        ),
-                      ),
+                      if (eventsForDate.isNotEmpty)
+                        SizedBox(height: 4.sp), // Responsive spacing
+                      if (eventsForDate.isNotEmpty && eventColors.isNotEmpty)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: eventColors.map((color) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 2.sp), // Responsive padding
+                              child: CircleAvatar(
+                                radius: 3.sp, // Responsive radius
+                                backgroundColor: color,
+                              ),
+                            );
+                          }).toList(),
+                        )
                     ],
                   ),
                 ),
               ),
-            ],
-          ),
-        );
-      },
-      weekPageHeaderBuilder: (startDate, endDate) => Container(
-          // Header customization can be added here
-          ),
-      onEventTap: (events, date) {
-        // Show alert dialog with event details
-        if (events.isNotEmpty) {
-          controller.selectedEvent.value = events;
-          print(controller.selectedEvent);
-        }
-      },
-    ),
-  );
-}
+            );
+          },
+          weekDayBuilder: (int index) {
+            return Column(
+              children: [
+                SizedBox(height: 10.sp), // Responsive spacing
+                Text(
+                  ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index],
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                    fontSize: 12.sp, // Responsive font size
+                  ),
+                ),
+                SizedBox(height: 10.sp), // Responsive spacing
+              ],
+            );
+          },
+          pageTransitionDuration: const Duration(milliseconds: 300),
+          pageTransitionCurve: Curves.ease,
+          startDay: WeekDays.sunday,
+          hideDaysNotInMonth: false,
+          pageViewPhysics: const BouncingScrollPhysics(),
+          cellAspectRatio: 0.9,
+          onPageChange: (DateTime date, int pageIndex) {
+            controller.onMonthChanged(date);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWeekView(CalendarController controller, BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.sp), // Responsive border radius
+      ),
+      child: WeekView<Object?>(
+        controller: controller
+            .eventController.value, // Use the observable event controller
+        onPageChange: (DateTime date, int pageIndex) {
+          controller.onMonthChanged(date);
+        },
+        showLiveTimeLineInAllDays: true,
+        minDay: DateTime(2024, 1, 1),
+        maxDay: DateTime(2024, 12, 31),
+        initialDay: controller
+            .selectedDate.value, // Use the selected date from the controller
+        timeLineBuilder: (total) {
+          return Padding(
+            padding:
+                EdgeInsets.symmetric(horizontal: 8.sp), // Responsive padding
+            child: Text(
+              '${total.hour.toString().padLeft(2, '0')}:00',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 10.sp, // Responsive font size
+              ),
+            ),
+          );
+        },
+        eventTileBuilder: (date, events, boundary, start, end) {
+          // Check if the date is today
+          bool isToday = date.isAtSameMomentAs(DateTime.now());
+
+          return Container(
+            color: const Color.fromARGB(255, 226, 226, 224),
+            child: Row(
+              children: [
+                if (isToday) ...[
+                  const CircleAvatar(
+                    backgroundColor: Colors.blue, // Blue background
+                    child: Text(
+                      'Today', // Text to display
+                      style: TextStyle(
+                        color: Colors.white, // White text color
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8.sp), // Responsive spacing
+                ],
+                // Render event indicator if there are events
+                if (events.isNotEmpty) ...[
+                  Container(
+                    color: events.first.color,
+                    height: double.maxFinite,
+                    width: 3.w, // Responsive width
+                  ),
+                ],
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(3.sp), // Responsive padding
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            events.isNotEmpty ? events.first.title : '',
+                            style: TextStyle(
+                              fontSize: 12.sp, // Responsive font size
+                              fontWeight: FontWeight.bold,
+                              overflow:
+                                  TextOverflow.ellipsis, // Handle overflow
+                            ),
+                            maxLines: 1, // Limit to one line
+                          ),
+                        ),
+                        Flexible(
+                          child: Text(
+                            events.isNotEmpty
+                                ? events.first.event.toString()
+                                : '',
+                            style: TextStyle(
+                              fontSize: 10.sp, // Responsive font size
+                              overflow:
+                                  TextOverflow.ellipsis, // Handle overflow
+                            ),
+                            maxLines: 1, // Limit to one line
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+        weekPageHeaderBuilder: (startDate, endDate) => Container(
+            // Header customization can be added here
+            ),
+        onEventTap: (events, date) {
+          // Show alert dialog with event details
+          if (events.isNotEmpty) {
+            controller.selectedEvent.value = events;
+            print(controller.selectedEvent);
+          }
+        },
+      ),
+    );
+  }
+
   Widget _buildDayView(CalendarController controller) {
     return Obx(
       () => Container(
